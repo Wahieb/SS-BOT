@@ -12,6 +12,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.config import Config
 from bot.workers import Worker
 from bot.utils.broadcast import Broadcast
+from bot.stream import StreamServer
 
 
 log = logging.getLogger(__name__)
@@ -27,6 +28,11 @@ class ScreenShotBot(Client):
             plugins=dict(root="bot/plugins"),
         )
         self.process_pool = Worker()
+        self.stream_server = StreamServer(
+            self,
+            host=Config.BIND_ADDRESS,
+            port=Config.STREAM_PORT,
+        )
         self.CHAT_FLOOD = defaultdict(
             lambda: int(time.time()) - Config.SLOW_SPEED_DELAY - 1
         )
@@ -35,10 +41,12 @@ class ScreenShotBot(Client):
     async def start(self):
         await super().start()
         await self.process_pool.start()
+        await self.stream_server.start()
         me = await self.get_me()
         print(f"New session started for {me.first_name}({me.username})")
 
     async def stop(self):
+        await self.stream_server.stop()
         await self.process_pool.stop()
         await super().stop()
         print("Session stopped. Bye!!")
