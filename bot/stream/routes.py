@@ -23,14 +23,9 @@ def _get_client_ip(req: web.Request) -> str:
     return peername[0] if peername else "unknown"
 
 
-@routes.head(r"/file/{chat_id}/{message_id}")
-async def handle_head(req: web.Request) -> web.Response:
-    return await _handle_request(req, head=True)
-
-
 @routes.get(r"/file/{chat_id}/{message_id}")
 async def handle_get(req: web.Request) -> web.StreamResponse:
-    return await _handle_request(req, head=False)
+    return await _handle_request(req, head=req.method == "HEAD")
 
 
 async def _handle_request(req: web.Request, head: bool):
