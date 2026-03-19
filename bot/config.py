@@ -15,6 +15,8 @@ class Config:
     TRACK_CHANNEL = int(os.environ.get("TRACK_CHANNEL", False))
     SLOW_SPEED_DELAY = int(os.environ.get("SLOW_SPEED_DELAY", 5))
     HOST = os.environ.get("HOST", "")
+    STREAM_PORT = int(os.environ.get("STREAM_PORT", "8080"))
+    BIND_ADDRESS = os.environ.get("BIND_ADDRESS", "0.0.0.0")
     TIMEOUT = int(os.environ.get("TIMEOUT", 60 * 30))
     DEBUG = bool(os.environ.get("DEBUG"))
     WORKER_COUNT = int(os.environ.get("WORKER_COUNT", 20))
