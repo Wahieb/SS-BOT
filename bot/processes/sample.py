@@ -4,6 +4,8 @@ import logging
 import tempfile
 import datetime
 
+from pyrogram.enums import ChatAction
+
 from bot.config import Config
 from bot.utils import Utilities
 from bot.messages import Messages as ms
@@ -29,7 +31,7 @@ class SampleVideoProcess(BaseProcess):
 
     async def process(self):
         async def upload_notify(*args):
-            await self.client.send_chat_action(self.chat_id, "upload_video")
+            await self.client.send_chat_action(self.chat_id, ChatAction.UPLOAD_VIDEO)
 
         await self.set_media_message()
         await self.input_message.edit_message_text(ms.PROCESSING_REQUEST)
