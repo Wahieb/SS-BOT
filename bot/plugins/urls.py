@@ -6,6 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..utils import Utilities
 from ..screenshotbot import ScreenShotBot
 from ..config import Config
+from ..messages import Messages as ms
 
 
 @ScreenShotBot.on_message(
@@ -34,7 +35,7 @@ async def _(c, m):
 
     duration = await Utilities.get_duration(file_link)
     if isinstance(duration, str):
-        await snt.edit_text("😟 Sorry! I cannot open the file.")
+        await snt.edit_text(ms.CANNOT_OPEN_FILE)
         log = await m.forward(Config.LOG_CHANNEL)
         await log.reply_text(duration, True)
         return

@@ -2,7 +2,6 @@ import os
 import random
 import asyncio
 import logging
-from urllib.parse import urljoin
 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -76,7 +75,7 @@ class Utilities:
     def generate_stream_link(media_msg):
         file_id = media_msg.id
         chat_id = media_msg.chat.id
-        return urljoin(Config.HOST, f"file/{chat_id}/{file_id}")
+        return f"{Config.HOST.rstrip('/')}/file/{chat_id}/{file_id}"
 
     @staticmethod
     async def get_media_info(file_link):
@@ -147,7 +146,10 @@ class Utilities:
         out = out.decode().strip()
         if not out:
             return err.decode()
-        duration = round(float(out))
+        try:
+            duration = round(float(out))
+        except ValueError:
+            return err.decode() or f"Unable to determine duration (ffprobe output: {out!r})"
         if duration:
             return duration
         return "No duration!"
