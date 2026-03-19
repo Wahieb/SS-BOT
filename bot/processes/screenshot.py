@@ -6,6 +6,7 @@ import logging
 import tempfile
 import datetime
 
+from pyrogram.enums import ChatAction
 from pyrogram.types import InputMediaPhoto, InputMediaDocument
 
 from bot.config import Config
@@ -169,7 +170,7 @@ class ScreenshotsProcess(BaseProcess):
                         count=num_screenshots, total_count=len(screenshots)
                     )
                 )
-                await self.client.send_chat_action(self.chat_id, "upload_photo")
+                await self.client.send_chat_action(self.chat_id, ChatAction.UPLOAD_PHOTO)
                 await self.media_message.reply_media_group(screenshots, True)
                 await self.input_message.edit_message_text(
                     ms.PROCESS_UPLOAD_CONFIRM.format(
