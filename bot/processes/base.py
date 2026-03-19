@@ -1,8 +1,11 @@
+import logging
 from abc import ABC, abstractmethod
 
 from bot.config import Config
 from bot.messages import Messages as ms
 from bot.utils import Utilities
+
+log = logging.getLogger(__name__)
 
 
 class BaseProcess(ABC):
@@ -25,8 +28,13 @@ class BaseProcess(ABC):
 
     async def track_user_activity(self):
         if Config.TRACK_CHANNEL:
-            tr_msg = await self.media_message.forward(Config.TRACK_CHANNEL)
-            await tr_msg.reply_text(ms.TRACK_USER_ACTIVITY.format(chat_id=self.chat_id))
+            try:
+                tr_msg = await self.media_message.forward(Config.TRACK_CHANNEL)
+                await tr_msg.reply_text(ms.TRACK_USER_ACTIVITY.format(chat_id=self.chat_id))
+            except (ValueError, KeyError) as e:
+                log.error("Failed to track user activity to channel %s: %s", Config.TRACK_CHANNEL, e)
+            except Exception as e:
+                log.error("Unexpected error tracking user activity to channel %s: %s", Config.TRACK_CHANNEL, e)
 
     @property
     def media_message(self):
